@@ -49,13 +49,11 @@ button{
 .line{opacity:0;transform:translateY(6px);transition:.4s;margin:6px 0}
 .line.show{opacity:1;transform:none}
 
-/* Timeline */
 .timeline{margin-top:16px;border-left:3px solid #fff;padding-left:14px}
 .step{margin-bottom:12px}
 .step span{display:block;font-weight:700}
 .step small{opacity:.9}
 
-/* Blinking alert */
 .alert-btn{
   margin-top:14px;
   background:red;
@@ -72,7 +70,6 @@ button{
   100%{opacity:1}
 }
 
-/* Countdown */
 .countdown{
   margin-top:12px;
   padding:10px;
@@ -125,16 +122,16 @@ button{
 </div>
 
 <script>
-const TRACK_CODE = "XX-UK92502";
-const AUTO_HIDE = 120000; // 2 minutes
+const TRACK_CODE = "XXUK92502"; // normalized
+const AUTO_HIDE = 120000;
 
 const DATA = [
-  "<b>Consignment Number:</b> XX-UK92502",
+  "<b>Consignment Number:</b> XX-UK-92502",
   "<b>AWB Type:</b> Natural AWB",
   "<b>Status:</b> Not Yet Cleared",
   "<b>Sender Name:</b> Bien Slander",
   "<b>Sender Address:</b> Yemen",
-  "<b>Receiver Name:</b> Frank Pasiho Mafumba",
+  "<b>Receiver Name:</b> Mafumba Mafumba",
   "<b>Receiver Phone:</b> +267 72 489 550",
   "<b>Receiver Address:</b> P.O. Box 318, Plot No 55, Newtown, Kasane, Botswana",
   "<b>Current Location:</b> On Route",
@@ -145,29 +142,26 @@ const DATA = [
 ];
 
 let hideTimer;
-
-// Countdown since departure
 const departureDate = new Date(2026,0,2,12,28,0);
 
 function updateTimer(){
   const now = new Date();
   if(now < departureDate){
-    document.getElementById("timer").textContent =
-      "⏱ Time since departure: calculating…";
+    timer.textContent = "⏱ Time since departure: calculating…";
     return;
   }
   const diff = now - departureDate;
-  const hrs = Math.floor(diff / (1000*60*60));
-  const mins = Math.floor((diff / (1000*60)) % 60);
-  const secs = Math.floor((diff / 1000) % 60);
-  document.getElementById("timer").textContent =
-    `⏱ Time since departure: ${hrs}h ${mins}m ${secs}s`;
+  timer.textContent =
+    `⏱ Time since departure: ${Math.floor(diff/3600000)}h ${Math.floor(diff/60000)%60}m ${Math.floor(diff/1000)%60}s`;
+}
+setInterval(updateTimer,1000);
+
+function normalize(code){
+  return code.replace(/[^A-Z0-9]/gi,"").toUpperCase();
 }
 
-setInterval(updateTimer, 1000);
-
 function track(){
-  const input = document.getElementById("code").value.trim().toUpperCase();
+  const input = normalize(document.getElementById("code").value);
   const loader = document.getElementById("loader");
   const prog = document.getElementById("prog");
   const result = document.getElementById("result");
@@ -199,10 +193,7 @@ function track(){
     });
 
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(()=>{
-      result.style.display="none";
-    }, AUTO_HIDE);
-
+    hideTimer=setTimeout(()=>result.style.display="none",AUTO_HIDE);
   },1500);
 }
 </script>
